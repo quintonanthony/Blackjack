@@ -5,27 +5,39 @@ import java.util.List;
 
 public class Deck {
 
-    private ArrayList<Card> deck;
+    private ArrayList<Card> cards;
 
     public  Deck() {
-        this.deck = new ArrayList<>();
+        this.cards = new ArrayList<>();
+        initializeDeck();
 
-        for (int suit = 0; suit <= 3; suit++) {
-            for (int value = 2; value <= 14; value++) {
-                deck.add(new Card(suit, value));
+//        for (int suit = 0; suit <= 3; suit++) {
+//            for (int value = 2; value <= 14; value++) {
+//                deck.add(new Card(suit, value));
+//            }
+//        }
+    }
+
+    private void initializeDeck() {
+        for (int deck = 0; deck < 6; deck++) {
+            for (int suit = 0; suit < 4; suit++) {
+                for (int val = 2; val <= 14; val++) {
+                    cards.add(new Card(suit, val));
+                }
             }
         }
     }
 
         public void shuffle() {
-            Collections.shuffle(deck);
+            Collections.shuffle(cards);
         }
 
         public Card getCard() {
-            if(!deck.isEmpty()){
-                return deck.remove(deck.size()-1);
+            if(!cards.isEmpty()){
+                return cards.remove(cards.size()-1);
             }
             return null;
         }
 
 }
+

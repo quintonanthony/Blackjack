@@ -7,8 +7,9 @@ public class Blackjack {
     private ArrayList<Card> player;
     private ArrayList<Card> dealer;
     private int playerChips;
-
     private String playerName;
+    private int playerBet;
+
 
 
     Scanner kb;
@@ -24,24 +25,45 @@ public class Blackjack {
 
     public static void main(String[] args) {
         Blackjack game = new Blackjack();
-        game.setPlayerName();
-        game.run();
+            game.setPlayerNameAndBet();
+            game.run();
+
     }
 
         private void setPlayerName() {
         System.out.println("Enter your name: ");
         playerName = kb.nextLine();
         System.out.println("Welcome, to Q's Casino " + playerName + ". Today we will be playing Blackjack!");
+        System.out.println("Each guest is given 100 chips to bet with");
+        System.out.println("Have fun and please... Gamble responsibly");
         System.out.println();
     }
 
+    private void getPlayerBet() {
+        while (true) {
+            System.out.println("Current chips: " + playerChips);
+            System.out.println("How many chips would you like to bet?");
+            try {
+                int bet = Integer.parseInt(kb.nextLine());
 
+                if (bet < 1 || bet > playerChips) {
+                    System.out.println("Invalid bet. Please enter a value between 1 and " + playerChips);
+                } else {
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
+
+    private void setPlayerNameAndBet() {
+        setPlayerName();
+        getPlayerBet();
+    }
 
     private void run() {
         while (true) {
-            //System.out.println("\nRemaining chips: " + playerChips);
-
-            // Check if the player has enough chips to continue playing
             if (playerChips <= 0) {
                 System.out.println("You're out of chips. Game over!");
                 break;
@@ -56,17 +78,11 @@ public class Blackjack {
                 System.out.println("Blackjack! You win!");
                 playerChips += 15; // Payout for Blackjack (adjust as needed)
             } else {
-                // Player's turn
                 playerTurn();
-                // Dealer's turn
                 dealerTurn();
-                // Determine the winner and adjust chips
-                determineWinner();
+                determineWinner(playerBet);
             }
 
-
-
-            // Ask if the player wants to play again
             System.out.println("\nDo you want to play again? (yes/no)");
             String playAgain = kb.nextLine().toLowerCase();
             if (!playAgain.equals("yes")) {
@@ -91,10 +107,10 @@ public class Blackjack {
 
     private void playerTurn() {
         while (true) {
-            System.out.println("\nWould you like to hit or stand?");
+            System.out.println("\nWould you like to hit or stand? [h/s]");
             String response = kb.nextLine();
 
-            if (response.toLowerCase().equals("hit")) {
+            if (response.toLowerCase().equals("hit") || response.toLowerCase().equals("h")) {
                 player.add(deck.getCard());
                 System.out.println(playerName + "'s hand:\t" + getPlayerHand());
                 System.out.println(playerName+ "'s' hand sum: " + calculateHandValue(player));
@@ -112,7 +128,7 @@ public class Blackjack {
                     playerChips += 15; // Payout for Blackjack (adjust as needed)
                     break;
                 }
-            } else if (response.toLowerCase().equals("stand")) {
+            } else if (response.toLowerCase().equals("stand") || response.toLowerCase().equals("s")) {
                 break;
             }
         }
@@ -132,7 +148,7 @@ public class Blackjack {
         System.out.println("Dealer's hand total: " + calculateHandValue(dealer));
     }
 
-    private void determineWinner() {
+    private void determineWinner(int bet) {
         int playerValue = calculateHandValue(player);
         int dealerValue = calculateHandValue(dealer);
 
@@ -144,15 +160,17 @@ public class Blackjack {
 
         System.out.println();
 
+
+
         if (playerValue > 21 || (dealerValue <= 21 && dealerValue >= playerValue)) {
             System.out.println("Dealer wins. You lose :(");
-            playerChips -= 10; // Adjust the chip amount as needed
+            playerChips -= bet;
         } else if (playerValue == dealerValue) {
             System.out.println("It's a push! No chips are lost or gained.");
         } else {
-            System.out.println("You just beat the dealer");
-            playerChips += 10; // Adjust the chip amount as needed
+            playerChips += bet;
         }
+        System.out.println(playerName + "'s total chips: " + playerChips);
     }
 
     private int calculateHandValue(ArrayList<Card> hand) {
