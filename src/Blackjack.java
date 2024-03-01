@@ -9,9 +9,7 @@ public class Blackjack {
     private int playerChips;
     private String playerName;
     private int playerBet;
-
-
-
+    private int bet;
     Scanner kb;
 
     public Blackjack() {
@@ -93,11 +91,9 @@ public class Blackjack {
     }
 
     private void dealCards() {
-        // Reset hands
         player.clear();
         dealer.clear();
 
-        // Deal initial cards
         player.add(deck.getCard());
         dealer.add(deck.getCard());
         player.add(deck.getCard());
@@ -157,10 +153,9 @@ public class Blackjack {
         System.out.println(playerName + "'s hand:\t" + getPlayerHand());
         System.out.println("Dealer's hand total: " + calculateHandValue(dealer));
         System.out.println(playerName + "'s hand sum: " + calculateHandValue(player));
-
         System.out.println();
 
-
+        playerBet = bet;
 
         if (playerValue > 21 || (dealerValue <= 21 && dealerValue >= playerValue)) {
             System.out.println("Dealer wins. You lose :(");
@@ -168,6 +163,7 @@ public class Blackjack {
         } else if (playerValue == dealerValue) {
             System.out.println("It's a push! No chips are lost or gained.");
         } else {
+            System.out.println("You just beat the dealer");
             playerChips += bet;
         }
         System.out.println(playerName + "'s total chips: " + playerChips);
@@ -196,7 +192,6 @@ public class Blackjack {
 
         return value;
     }
-
 
     private String getPlayerHand() {
         StringBuilder handString = new StringBuilder();
