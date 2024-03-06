@@ -10,12 +10,6 @@ public class Deck {
     public  Deck() {
         this.cards = new ArrayList<>();
         initializeDeck();
-
-//        for (int suit = 0; suit <= 3; suit++) {
-//            for (int value = 2; value <= 14; value++) {
-//                deck.add(new Card(suit, value));
-//            }
-//        }
     }
 
     private void initializeDeck() {

@@ -23,9 +23,20 @@ public class Blackjack {
 
     public static void main(String[] args) {
         Blackjack game = new Blackjack();
-            game.setPlayerNameAndBet();
+        game.setPlayerName();
+
+        while (true) {
+            game.getPlayerBet();
             game.run();
 
+            System.out.println("Do you want to play again? (yes/no)");
+            String playAgain = game.kb.nextLine().toLowerCase();
+
+            if (!playAgain.equals("yes")) {
+                System.out.println("Thanks for playing! Please visit soon!");
+                break;
+            }
+        }
     }
 
         private void setPlayerName() {
@@ -42,7 +53,7 @@ public class Blackjack {
             System.out.println("Current chips: " + playerChips);
             System.out.println("How many chips would you like to bet?");
             try {
-                int bet = Integer.parseInt(kb.nextLine());
+                bet = Integer.parseInt(kb.nextLine());
 
                 if (bet < 1 || bet > playerChips) {
                     System.out.println("Invalid bet. Please enter a value between 1 and " + playerChips);
@@ -62,6 +73,7 @@ public class Blackjack {
 
     private void run() {
         while (true) {
+
             if (playerChips <= 0) {
                 System.out.println("You're out of chips. Game over!");
                 break;
@@ -74,21 +86,18 @@ public class Blackjack {
 
             if (calculateHandValue(player) == 21) {
                 System.out.println("Blackjack! You win!");
-                playerChips += 15; // Payout for Blackjack (adjust as needed)
-            } else {
+                playerChips += (bet*1.5); // Payout for Blackjack (adjust as needed)
+            }
+            else {
                 playerTurn();
                 dealerTurn();
-                determineWinner(playerBet);
+                determineWinner();
             }
 
-            System.out.println("\nDo you want to play again? (yes/no)");
-            String playAgain = kb.nextLine().toLowerCase();
-            if (!playAgain.equals("yes")) {
-                System.out.println("Thanks for playing!");
-                break;
-            }
         }
     }
+
+
 
     private void dealCards() {
         player.clear();
@@ -106,22 +115,22 @@ public class Blackjack {
             System.out.println("\nWould you like to hit or stand? [h/s]");
             String response = kb.nextLine();
 
+
             if (response.toLowerCase().equals("hit") || response.toLowerCase().equals("h")) {
                 player.add(deck.getCard());
                 System.out.println(playerName + "'s hand:\t" + getPlayerHand());
                 System.out.println(playerName+ "'s' hand sum: " + calculateHandValue(player));
 
-                // Check for bust after hitting
                 if (calculateHandValue(player) > 21) {
                     System.out.println("Bust! You lose.");
-                    playerChips -= 10; // Adjust the chip amount as needed
+                    playerChips -= bet; // Adjust the chip amount as needed
                     break;
                 }
 
                 // Check for Blackjack after hitting
                 if (calculateHandValue(player) == 21) {
                     System.out.println("Blackjack! You win!");
-                    playerChips += 15; // Payout for Blackjack (adjust as needed)
+                    playerChips += (bet*1.5);
                     break;
                 }
             } else if (response.toLowerCase().equals("stand") || response.toLowerCase().equals("s")) {
@@ -144,7 +153,7 @@ public class Blackjack {
         System.out.println("Dealer's hand total: " + calculateHandValue(dealer));
     }
 
-    private void determineWinner(int bet) {
+    private void determineWinner() {
         int playerValue = calculateHandValue(player);
         int dealerValue = calculateHandValue(dealer);
 
@@ -155,7 +164,6 @@ public class Blackjack {
         System.out.println(playerName + "'s hand sum: " + calculateHandValue(player));
         System.out.println();
 
-        playerBet = bet;
 
         if (playerValue > 21 || (dealerValue <= 21 && dealerValue >= playerValue)) {
             System.out.println("Dealer wins. You lose :(");
